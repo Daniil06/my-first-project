@@ -1,0 +1,11 @@
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+.btn {
+  margin: 20px;
+}
+app-user-card {
+  cursor: pointer;
+}
