@@ -1,5 +1,5 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { IUser } from "../models/IUser.model";
+import { User } from "../models/users.model";
 import { MatCard, MatCardActions, MatCardHeader, MatCardModule } from "@angular/material/card";
 import { NgIf } from "@angular/common";
 import { MatButton } from "@angular/material/button";
@@ -20,8 +20,8 @@ import { UsersService } from "../services/users.service";
   styleUrl: './user-card.component.css'
 })
 export class UserCardComponent {
-  @Input() user!: IUser
-  @Output() deletedUser = new EventEmitter<IUser>()
+  @Input() user!: User
+  @Output() deletedUser = new EventEmitter<User>()
 
   private usersService: UsersService = inject(UsersService)
 

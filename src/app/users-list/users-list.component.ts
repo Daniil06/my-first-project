@@ -1,13 +1,13 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { IUser } from "../models/IUser.model";
+import { User } from "../models/users.model";
 import { UsersApiService } from "../services/users-api.service";
 import { UserCardComponent } from "../user-card/user-card.component";
 import { NgForOf } from "@angular/common";
 import { UsersService } from "../services/users.service";
 import { MatButton } from "@angular/material/button";
-
 import { CreateEditUserComponent } from "../create-edit-user/create-edit-user.component";
 import { MatDialog } from "@angular/material/dialog";
+import { LocalStorageService } from "../services/local-storage.service";
 
 @Component({
   selector: 'app-users-list',
@@ -22,55 +22,65 @@ import { MatDialog } from "@angular/material/dialog";
   styleUrl: './users-list.component.css'
 })
 export class UsersListComponent implements OnInit{
-  usersList: IUser[] = []
 
-  constructor(
-    private usersApiService: UsersApiService,
-    private usersService: UsersService,
-    private dialog: MatDialog
-  ){
-  }
+    private usersApiService = inject(UsersApiService)
+    public usersService = inject(UsersService)
+    private dialog = inject(MatDialog)
+    private localStorageService = inject(LocalStorageService)
   ngOnInit(): void {
-    this.usersApiService.getUsers()
-      .subscribe({
-        next: (res) => {
-          this.usersService.saveUsers(res)
-          this.usersList = this.usersService.users;
-        },
-        error: (error) => {
-          console.error('error in userslist', error)
-        }
-      })
+    this.loadUsers()
   }
-  onDelete(user: IUser) {
+
+  loadUsers() {
+      const storeUsers = this.localStorageService.getItem('users');
+      if (storeUsers && storeUsers.length > 0) {
+        this.usersService.saveUsers(storeUsers);
+      } else {
+        this.usersApiService.getUsers()
+          .subscribe({
+            next: (res) => {
+              this.usersService.saveUsers(res);
+              this.localStorageService.setItem('users', res);
+            },
+            error: (error) => {
+              console.error('error in usersList', error)
+            }
+          })
+      }
+  }
+  onDelete(user: User) {
      this.usersService.deleteUser(user.id)
-     this.usersList = this.usersService.users
+     // this.usersService.users
+    localStorage.setItem('users', JSON.stringify(this.usersService.users));
   }
 
   onAddUser() {
     const dialogRef = this.dialog.open(CreateEditUserComponent, {
       data: { user: null, isEdit: false }
     });
-
+    // dialogRef.componentInstance.isEdit = false;
     dialogRef.afterClosed()
       .subscribe(result => {
+        console.log('Result from dialog:', result);
         if (result) {
-          console.log('До:', this.usersList);
-          const maxId = this.usersList.reduce((max, user) =>
-            user.id > max ? user.id : max, 0)
-          const newUser: IUser = {
-            id: maxId + 1,
-            name: result.name,
-            username: result.username,
-            email: result.email,
-          };
-          this.usersList = [...this.usersList, newUser];
-          console.log('После:', this.usersList);
+          this.usersService.createUser(result);
+          localStorage.setItem('users', JSON.stringify(this.usersService.users))
         }
       })
   }
 
-  onEdit() {
-
+  onEdit(user: User) {
+    const dialogRef = this.dialog.open(CreateEditUserComponent, {
+      data: { user, isEdit: true }
+    });
+    dialogRef.afterClosed()
+      .subscribe(result => {
+        console.log('Result from dialog:', result);
+        if (result) {
+          this.usersService.editUser(result);
+          console.log('Updated users:', this.usersService.users);
+          this.localStorageService.setItem('users', this.usersService.users)
+        }
+      })
   }
 }

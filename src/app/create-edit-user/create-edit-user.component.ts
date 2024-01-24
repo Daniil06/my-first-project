@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef } from "@angular/material/dialog";
 import { MatInput } from "@angular/material/input";
 import { MatButton } from "@angular/material/button";
-import { IUser } from "../models/IUser.model";
+import { User } from "../models/users.model";
 import { UsersService } from "../services/users.service";
 
 @Component({
@@ -23,11 +23,12 @@ import { UsersService } from "../services/users.service";
 })
 export class CreateEditUserComponent implements OnInit{
   form: FormGroup;
+  isEdit: boolean;
 
   constructor(
     private usersService: UsersService,
     public dialogRef: MatDialogRef<CreateEditUserComponent>,
-    @Inject(MAT_DIALOG_DATA) private data: { user: IUser, isEdit: boolean},
+    @Inject(MAT_DIALOG_DATA) public data: { user: User, isEdit: boolean},
     private fb: FormBuilder,
   ) {
     this.form = this.fb.group({
@@ -35,6 +36,7 @@ export class CreateEditUserComponent implements OnInit{
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
     })
+    this.isEdit = data.isEdit;
   }
 
   ngOnInit(): void {
@@ -44,7 +46,8 @@ export class CreateEditUserComponent implements OnInit{
   }
 
   onClose() {
-    this.dialogRef.close()
+    console.log('onClose() called');
+    this.dialogRef.close(null)
   }
 
   onSubmit() {

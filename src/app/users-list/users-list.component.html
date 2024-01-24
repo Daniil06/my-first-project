@@ -4,15 +4,15 @@
     class="user-add-btn"
     color="primary"
     mat-raised-button
-  >Add Todo
+  >Add User
   </button>
 </div>
 <div class="container">
   <app-user-card
-    *ngFor="let user of usersList"
+    *ngFor="let user of usersService.users"
     [user]="user"
     (deletedUser)="onDelete($event)"
-    (click)="onEdit()"
+    (click)="onEdit(user)"
   ></app-user-card>
 </div>
 
