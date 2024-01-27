@@ -5,4 +5,4 @@ export type User = {
   email: string
 }
 
-export type NewUser = Pick<User, 'name' | 'username' | 'email'>;
+export type NewUser = Pick<User, 'name' | 'username' | 'email'>
