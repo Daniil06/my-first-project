@@ -1,22 +1,22 @@
 import { Injectable } from '@angular/core';
-import { User } from "../models/users.model";
-import { NewUser } from "../models/users.model";
+import { IUser } from "../models/users.model";
+import { INewUser } from "../models/users.model";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsersService {
-  users: User[] = []
+  users: IUser[] = []
 
-  saveUsers(users: User[]) {
+  saveUsers(users: IUser[]) {
      this.users = users
     console.log(users);
   }
 
-  createUser(newUserData: NewUser): User {
+  createUser(newUserData: INewUser): IUser {
     const maxId = this.users.reduce((max, user) =>
       (user.id > max ? user.id : max), 0);
-    const newUser: User = {
+    const newUser: IUser = {
       id: maxId + 1,
       name: newUserData.name,
       username: newUserData.username,
@@ -30,7 +30,7 @@ export class UsersService {
     this.users = this.users.filter(user => user.id !== id);
   }
 
-  editUser(updatedUser: User) {
+  editUser(updatedUser: IUser) {
     if (Array.isArray(this.users)) {
       const index = this.users.findIndex(user => user.id === updatedUser.id);
 
@@ -39,7 +39,7 @@ export class UsersService {
       }
     }
      else {
-      console.error(`User with id ${updatedUser.id} not found.`);
+      console.error(`IUser with id ${updatedUser.id} not found.`);
     }
   }
 }

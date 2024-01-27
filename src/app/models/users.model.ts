@@ -1,8 +1,8 @@
-export type User = {
+export interface IUser {
   id: number,
   name: string,
   username: string,
   email: string
 }
 
-export type NewUser = Pick<User, 'name' | 'username' | 'email'>
+export interface INewUser extends Omit<IUser, 'id'> {}

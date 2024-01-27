@@ -1,12 +1,12 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { User } from "../models/users.model";
+import { IUser } from "../models/users.model";
 import { UsersApiService } from "../services/users-api.service";
 import { UserCardComponent } from "../user-card/user-card.component";
 import { NgForOf } from "@angular/common";
 import { UsersService } from "../services/users.service";
 import { MatButton } from "@angular/material/button";
 import { CreateEditUserComponent } from "../create-edit-user/create-edit-user.component";
-import { MatDialog } from "@angular/material/dialog";
+import { MatDialog, MatDialogClose } from "@angular/material/dialog";
 import { LocalStorageService } from "../services/local-storage.service";
 
 @Component({
@@ -16,7 +16,8 @@ import { LocalStorageService } from "../services/local-storage.service";
     UserCardComponent,
     CreateEditUserComponent,
     NgForOf,
-    MatButton
+    MatButton,
+    MatDialogClose
   ],
   templateUrl: './users-list.component.html',
   styleUrl: './users-list.component.css'
@@ -48,7 +49,7 @@ export class UsersListComponent implements OnInit{
           })
       }
   }
-  onDelete(user: User) {
+  onDelete(user: IUser) {
      this.usersService.deleteUser(user.id)
      // this.usersService.users
     localStorage.setItem('users', JSON.stringify(this.usersService.users));
@@ -69,7 +70,7 @@ export class UsersListComponent implements OnInit{
       })
   }
 
-  onEdit(user: User) {
+  onEdit(user: IUser) {
     const dialogRef = this.dialog.open(CreateEditUserComponent, {
       data: { user, isEdit: true }
     });

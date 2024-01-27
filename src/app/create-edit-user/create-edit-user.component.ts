@@ -1,10 +1,16 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatFormField } from "@angular/material/form-field";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef } from "@angular/material/dialog";
+import {
+  MAT_DIALOG_DATA,
+  MatDialogActions,
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogRef
+} from "@angular/material/dialog";
 import { MatInput } from "@angular/material/input";
 import { MatButton } from "@angular/material/button";
-import { User } from "../models/users.model";
+import { IUser } from "../models/users.model";
 import { UsersService } from "../services/users.service";
 
 @Component({
@@ -16,7 +22,8 @@ import { UsersService } from "../services/users.service";
     MatDialogActions,
     MatInput,
     MatButton,
-    MatDialogContent
+    MatDialogContent,
+    MatDialogClose
   ],
   templateUrl: './create-edit-user.component.html',
   styleUrl: './create-edit-user.component.css'
@@ -28,7 +35,7 @@ export class CreateEditUserComponent implements OnInit{
   constructor(
     private usersService: UsersService,
     public dialogRef: MatDialogRef<CreateEditUserComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { user: User, isEdit: boolean},
+    @Inject(MAT_DIALOG_DATA) public data: { user: IUser, isEdit: boolean},
     private fb: FormBuilder,
   ) {
     this.form = this.fb.group({
@@ -47,7 +54,7 @@ export class CreateEditUserComponent implements OnInit{
 
   onClose() {
     console.log('onClose() called');
-    this.dialogRef.close(null)
+    this.dialogRef.close()
   }
 
   onSubmit() {
